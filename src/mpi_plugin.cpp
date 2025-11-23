@@ -9,7 +9,7 @@
 namespace xmipp4 
 {
 
-const std::string mpi_plugin::name = "xmipp4-communication-mpi";
+const std::string mpi_plugin::name = "xmipp4-mpi";
 
 const std::string& mpi_plugin::get_name() const noexcept
 {

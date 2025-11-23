@@ -14,15 +14,15 @@ using namespace xmipp4;
 static std::string get_mpi_plugin_path()
 {
     #if XMIPP4_WINDOWS
-        return "xmipp4-communication-mpi.dll";
+        return "xmipp4-mpi.dll";
     #elif XMIPP4_APPLE || XMIPP4_LINUX
-        return "./libxmipp4-communication-mpi.so";
+        return "./libxmipp4-mpi.so";
     #else
         #error "Unknown platform"
     #endif
 }
 
-TEST_CASE( "load and register xmipp4-communication-mpi plugin", "[communication-mpi]" ) 
+TEST_CASE( "load and register xmipp4-mpi plugin", "[mpi]" ) 
 {
     plugin_manager manager;
 
@@ -30,7 +30,7 @@ TEST_CASE( "load and register xmipp4-communication-mpi plugin", "[communication-
         manager.load_plugin(get_mpi_plugin_path());
 
     REQUIRE( mpi_plugin != nullptr );
-    REQUIRE( mpi_plugin->get_name() == "xmipp4-communication-mpi" );
+    REQUIRE( mpi_plugin->get_name() == "xmipp4-mpi" );
 
     service_catalog interfaces;
     mpi_plugin->register_at(interfaces);
