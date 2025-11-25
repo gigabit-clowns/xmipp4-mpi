@@ -20,7 +20,7 @@ mpi_instance::mpi_instance()
     const auto error = MPI_Init(nullptr, nullptr);
     mpi_check_error(error);
     
-    m_world = std::make_shared<mpi_communicator>(MPI_COMM_WORLD);
+    m_world = std::make_shared<mpi_host_communicator>(MPI_COMM_WORLD);
 }
 
 mpi_instance::~mpi_instance()
@@ -28,7 +28,7 @@ mpi_instance::~mpi_instance()
     MPI_Finalize();
 }
 
-const std::shared_ptr<mpi_communicator>& 
+const std::shared_ptr<mpi_host_communicator>& 
 mpi_instance::get_world_communicator() const noexcept
 {
     return m_world;
