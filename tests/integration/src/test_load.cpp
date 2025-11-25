@@ -22,7 +22,6 @@ static std::string get_mpi_plugin_path()
     #endif
 }
 
-/* TODO
 TEST_CASE( "load and register xmipp4-mpi plugin", "[mpi]" ) 
 {
     plugin_manager manager;
@@ -42,4 +41,3 @@ TEST_CASE( "load and register xmipp4-mpi plugin", "[mpi]" )
     REQUIRE( mpi_backend != nullptr );
     REQUIRE( mpi_backend->get_name() == "mpi" );
 }
-*/ 
