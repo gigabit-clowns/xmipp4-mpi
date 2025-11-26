@@ -14,9 +14,9 @@ namespace communication
  * 
  */
 class mpi_error
-    : public std::runtime_error
+	: public std::runtime_error
 {
-    using runtime_error::runtime_error;
+	using runtime_error::runtime_error;
 };
 
 /**
