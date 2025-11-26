@@ -47,7 +47,6 @@ public:
 
 private:
 	MPI_Comm m_communicator;
-
 };
 
 } // namespace communication

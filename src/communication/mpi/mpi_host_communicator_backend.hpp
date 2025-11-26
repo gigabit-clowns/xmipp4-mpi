@@ -46,7 +46,6 @@ private:
 	mutable std::shared_ptr<mpi_instance> m_instance;
 
 	mpi_instance& get_instance() const;
-
 };
 
 } // namespace communication

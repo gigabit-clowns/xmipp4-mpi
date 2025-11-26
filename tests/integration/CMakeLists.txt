@@ -5,9 +5,9 @@ include(FetchContent)
 
 # Fetch Catch2
 FetchContent_Declare(
-  Catch2
-  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v3.5.4
+	Catch2
+	GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+	GIT_TAG        v3.5.4
 )
 FetchContent_MakeAvailable(Catch2)
 include(Catch)
@@ -25,8 +25,8 @@ file(
 
 # Add the test executable
 add_executable(
-    ${TESTS_NAME}
-    ${TEST_SOURCES}
+	${TESTS_NAME}
+	${TEST_SOURCES}
 )
 set_target_properties(
 	${TESTS_NAME} PROPERTIES 
