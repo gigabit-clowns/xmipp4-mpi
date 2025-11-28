@@ -286,7 +286,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_barrier()
 
 void mpi_host_communicator::validate_root_rank(int root_rank)
 {
-	if (root_rank >= get_size())
+	if (root_rank >= static_cast<int>(get_size()))
 	{
 		throw std::out_of_range("The root_rank is out of bounds");
 	}
@@ -294,12 +294,12 @@ void mpi_host_communicator::validate_root_rank(int root_rank)
 
 void mpi_host_communicator::validate_peer_rank(int peer_rank)
 {
-	if (peer_rank >= get_size())
+	if (peer_rank >= static_cast<int>(get_size()))
 	{
 		throw std::out_of_range("The peer's rank is out of bounds");
 	}
 
-	if (peer_rank == get_rank())
+	if (peer_rank == static_cast<int>(get_rank()))
 	{
 		throw std::invalid_argument(
 			"The peer's rank can not be equal to the self rank"
