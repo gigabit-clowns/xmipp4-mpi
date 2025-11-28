@@ -23,6 +23,10 @@
 
 #include <stdexcept>
 
+// TODO: Centralize validations here.
+// TODO: Check for input regions not having nullptr.
+// TODO: Check size/datatype consistencies.
+
 namespace xmipp4 
 {
 namespace communication
@@ -218,15 +222,15 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_gather(
 	validate_mpi_datatype(send_datatype);
 	const auto recv_datatype = to_mpi_datatype(recv_region.get_data_type());
 	validate_mpi_datatype(recv_datatype);
+	const auto receive_count = recv_region.get_count() / get_size();
 
-	// TODO handle receive pointer division
 	return std::make_shared<mpi_host_gather_operation>(
 		m_communicator,
 		send_region.get_data(),
 		send_region.get_count(),
 		send_datatype,
 		recv_region.get_data(),
-		recv_region.get_count(),
+		receive_count,
 		recv_datatype,
 		root_rank
 	);
@@ -241,15 +245,15 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_all_gather(
 	validate_mpi_datatype(send_datatype);
 	const auto recv_datatype = to_mpi_datatype(recv_region.get_data_type());
 	validate_mpi_datatype(recv_datatype);
+	const auto receive_count = recv_region.get_count() / get_size();
 
-	// TODO handle receive pointer division
 	return std::make_shared<mpi_host_all_gather_operation>(
 		m_communicator,
 		send_region.get_data(),
 		send_region.get_count(),
 		send_datatype,
 		recv_region.get_data(),
-		recv_region.get_count(),
+		receive_count,
 		recv_datatype
 	);
 }
@@ -265,12 +269,12 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_scatter(
 	validate_mpi_datatype(send_datatype);
 	const auto recv_datatype = to_mpi_datatype(recv_region.get_data_type());
 	validate_mpi_datatype(recv_datatype);
+	const auto send_count = send_region.get_count() / get_size();
 
-	// TODO handle receive pointer division
 	return std::make_shared<mpi_host_scatter_operation>(
 		m_communicator,
 		send_region.get_data(),
-		send_region.get_count(),
+		send_count,
 		send_datatype,
 		recv_region.get_data(),
 		recv_region.get_count(),
