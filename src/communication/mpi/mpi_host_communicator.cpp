@@ -8,8 +8,12 @@
 
 #include "mpi_error.hpp"
 #include "mpi_datatype.hpp"
+#include "mpi_reduction.hpp"
 #include "mpi_host_send_operation.hpp"
 #include "mpi_host_receive_operation.hpp"
+#include "mpi_host_broadcast_operation.hpp"
+#include "mpi_host_reduce_operation.hpp"
+#include "mpi_host_all_reduce_operation.hpp"
 #include "mpi_host_barrier_operation.hpp"
 
 #include <xmipp4/core/logger.hpp>
@@ -107,6 +111,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_send(
 	const auto datatype = to_mpi_datatype(region.get_data_type());
 	validate_mpi_datatype(datatype);
 	validate_peer_rank(destination_rank);
+
 	return std::make_shared<mpi_host_send_operation>(
 		m_communicator,
 		region.get_data(),
@@ -126,6 +131,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_receive(
 	const auto datatype = to_mpi_datatype(region.get_data_type());
 	validate_mpi_datatype(datatype);
 	validate_peer_rank(source_rank);
+
 	return std::make_shared<mpi_host_receive_operation>(
 		m_communicator,
 		region.get_data(),
@@ -144,7 +150,8 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_broadcast(
 	const auto datatype = to_mpi_datatype(region.get_data_type());
 	validate_mpi_datatype(datatype);
 	validate_root_rank(root_rank);
-	return std::make_shared<mpi_host_receive_operation>(
+
+	return std::make_shared<mpi_host_broadcast_operation>(
 		m_communicator,
 		region.get_send_data(),
 		region.get_receive_data(),
@@ -152,7 +159,6 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_broadcast(
 		datatype,
 		root_rank
 	);
-
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_reduce(
@@ -161,8 +167,21 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_reduce(
 	int root_rank
 )
 {
+	const auto datatype = to_mpi_datatype(region.get_data_type());
+	const auto op = to_mpi_reduction(reduction);
+	validate_mpi_datatype(datatype);
+	validate_mpi_reduction(op);
 	validate_root_rank(root_rank);
 
+	return std::make_shared<mpi_host_reduce_operation>(
+		m_communicator,
+		region.get_send_data(),
+		region.get_receive_data(),
+		region.get_count(),
+		datatype,
+		op,
+		root_rank
+	);
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_all_reduce(
@@ -170,7 +189,19 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_all_reduce(
 	reduction_operation reduction
 )
 {
+	const auto datatype = to_mpi_datatype(region.get_data_type());
+	const auto op = to_mpi_reduction(reduction);
+	validate_mpi_datatype(datatype);
+	validate_mpi_reduction(op);
 
+	return std::make_shared<mpi_host_all_reduce_operation>(
+		m_communicator,
+		region.get_send_data(),
+		region.get_receive_data(),
+		region.get_count(),
+		datatype,
+		op
+	);
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_gather(
