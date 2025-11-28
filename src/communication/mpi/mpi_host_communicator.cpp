@@ -3,6 +3,7 @@
 #include "mpi_host_communicator.hpp"
 
 #include "mpi_error.hpp"
+#include "mpi_host_barrier_operation.hpp"
 
 #include <xmipp4/core/logger.hpp>
 
@@ -83,17 +84,91 @@ mpi_host_communicator::split(int colour, int rank_priority) const
 	}
 	catch(...)
 	{
-		// Error ocurred creating a the new communicator.
+		// Error occurred creating a the new communicator.
 		// Free the resources before propagating the error.
 		MPI_Comm_free(&new_communicator);
 		throw;
 	}
 }
 
-void mpi_host_communicator::barrier()
+std::shared_ptr<host_operation> mpi_host_communicator::create_send(
+	const host_send_region &buffer,
+	int destination_rank,
+	int tag
+)
 {
-	const auto error = MPI_Barrier(m_communicator);
-	mpi_check_error(error);
+	validate_peer_rank(destination_rank);
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_receive(
+	const host_receive_region &region,
+	int source_rank,
+	int tag
+)
+{
+	validate_peer_rank(source_rank);
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_broadcast(
+	const host_duplex_region &region,
+	int root_rank
+)
+{
+	validate_root_rank(root_rank);
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_reduce(
+	const host_duplex_region &region,
+	reduction_operation reduction,
+	int root_rank
+)
+{
+	validate_root_rank(root_rank);
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_all_reduce(
+	const host_duplex_region &region,
+	reduction_operation reduction
+)
+{
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_gather(
+	const host_send_region &send_region,
+	const host_receive_region &recv_region,
+	int root_rank
+)
+{
+	validate_root_rank(root_rank);
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_all_gather(
+	const host_send_region &send_region,
+	const host_receive_region &recv_region
+)
+{
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_scatter(
+	const host_send_region &send_region,
+	const host_receive_region &recv_region,
+	int root_rank
+)
+{
+	validate_root_rank(root_rank);
+
+}
+
+std::shared_ptr<host_operation> mpi_host_communicator::create_barrier()
+{
+	return std::make_shared<mpi_host_barrier_operation>();
 }
 
 } // namespace communication
