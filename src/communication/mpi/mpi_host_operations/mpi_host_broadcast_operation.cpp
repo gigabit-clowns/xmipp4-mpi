@@ -2,7 +2,7 @@
 
 #include "mpi_host_broadcast_operation.hpp"
 
-#include "mpi_error.hpp"
+#include "../mpi_error.hpp"
 
 #include <cstring>
 

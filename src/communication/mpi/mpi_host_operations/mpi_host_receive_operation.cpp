@@ -2,7 +2,7 @@
 
 #include "mpi_host_receive_operation.hpp"
 
-#include "mpi_error.hpp"
+#include "../mpi_error.hpp"
 
 namespace xmipp4 
 {

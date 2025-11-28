@@ -2,7 +2,7 @@
 
 #include "mpi_host_reduce_operation.hpp"
 
-#include "mpi_error.hpp"
+#include "../mpi_error.hpp"
 
 #include <cstring>
 

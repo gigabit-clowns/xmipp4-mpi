@@ -6,6 +6,7 @@
 #include "mpi_host_communicator.hpp"
 
 #include <xmipp4/core/communication/host_communicator_manager.hpp>
+#include <xmipp4/core/platform/assert.hpp>
 
 namespace xmipp4 
 {

@@ -9,12 +9,12 @@
 #include "mpi_error.hpp"
 #include "mpi_datatype.hpp"
 #include "mpi_reduction.hpp"
-#include "mpi_host_send_operation.hpp"
-#include "mpi_host_receive_operation.hpp"
-#include "mpi_host_broadcast_operation.hpp"
-#include "mpi_host_reduce_operation.hpp"
-#include "mpi_host_all_reduce_operation.hpp"
-#include "mpi_host_barrier_operation.hpp"
+#include "mpi_host_operations/mpi_host_send_operation.hpp"
+#include "mpi_host_operations/mpi_host_receive_operation.hpp"
+#include "mpi_host_operations/mpi_host_broadcast_operation.hpp"
+#include "mpi_host_operations/mpi_host_reduce_operation.hpp"
+#include "mpi_host_operations/mpi_host_all_reduce_operation.hpp"
+#include "mpi_host_operations/mpi_host_barrier_operation.hpp"
 
 #include <xmipp4/core/logger.hpp>
 
