@@ -44,7 +44,7 @@ public:
 	) const override;
 
 	std::shared_ptr<host_operation> create_send(
-		const host_send_region &buffer,
+		const host_send_region &region,
 		int destination_rank,
 		int tag
 	) override;

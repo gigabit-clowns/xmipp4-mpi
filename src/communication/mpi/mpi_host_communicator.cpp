@@ -2,7 +2,14 @@
 
 #include "mpi_host_communicator.hpp"
 
+#include <xmipp4/core/communication/host_duplex_region.hpp>
+#include <xmipp4/core/communication/host_receive_region.hpp>
+#include <xmipp4/core/communication/host_send_region.hpp>
+
 #include "mpi_error.hpp"
+#include "mpi_datatype.hpp"
+#include "mpi_host_send_operation.hpp"
+#include "mpi_host_receive_operation.hpp"
 #include "mpi_host_barrier_operation.hpp"
 
 #include <xmipp4/core/logger.hpp>
@@ -92,13 +99,22 @@ mpi_host_communicator::split(int colour, int rank_priority) const
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_send(
-	const host_send_region &buffer,
+	const host_send_region &region,
 	int destination_rank,
 	int tag
 )
 {
+	const auto datatype = to_mpi_datatype(region.get_data_type());
+	validate_mpi_datatype(datatype);
 	validate_peer_rank(destination_rank);
-
+	return std::make_shared<mpi_host_send_operation>(
+		m_communicator,
+		region.get_data(),
+		region.get_count(),
+		datatype,
+		destination_rank,
+		tag
+	);
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_receive(
@@ -107,8 +123,17 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_receive(
 	int tag
 )
 {
+	const auto datatype = to_mpi_datatype(region.get_data_type());
+	validate_mpi_datatype(datatype);
 	validate_peer_rank(source_rank);
-
+	return std::make_shared<mpi_host_receive_operation>(
+		m_communicator,
+		region.get_data(),
+		region.get_count(),
+		datatype,
+		source_rank,
+		tag
+	);
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_broadcast(
@@ -116,7 +141,17 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_broadcast(
 	int root_rank
 )
 {
+	const auto datatype = to_mpi_datatype(region.get_data_type());
+	validate_mpi_datatype(datatype);
 	validate_root_rank(root_rank);
+	return std::make_shared<mpi_host_receive_operation>(
+		m_communicator,
+		region.get_send_data(),
+		region.get_receive_data(),
+		region.get_count(),
+		datatype,
+		root_rank
+	);
 
 }
 
@@ -168,7 +203,30 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_scatter(
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_barrier()
 {
-	return std::make_shared<mpi_host_barrier_operation>();
+	return std::make_shared<mpi_host_barrier_operation>(m_communicator);
+}
+
+void mpi_host_communicator::validate_root_rank(int root_rank)
+{
+	if (root_rank >= get_size())
+	{
+		throw std::out_of_range("The root_rank is out of bounds");
+	}
+}
+
+void mpi_host_communicator::validate_peer_rank(int peer_rank)
+{
+	if (peer_rank >= get_size())
+	{
+		throw std::out_of_range("The peer's rank is out of bounds");
+	}
+
+	if (peer_rank == get_rank())
+	{
+		throw std::invalid_argument(
+			"The peer's rank can not be equal to the self rank"
+		);
+	}
 }
 
 } // namespace communication
