@@ -14,6 +14,9 @@
 #include "mpi_host_operations/mpi_host_broadcast_operation.hpp"
 #include "mpi_host_operations/mpi_host_reduce_operation.hpp"
 #include "mpi_host_operations/mpi_host_all_reduce_operation.hpp"
+#include "mpi_host_operations/mpi_host_gather_operation.hpp"
+#include "mpi_host_operations/mpi_host_all_gather_operation.hpp"
+#include "mpi_host_operations/mpi_host_scatter_operation.hpp"
 #include "mpi_host_operations/mpi_host_barrier_operation.hpp"
 
 #include <xmipp4/core/logger.hpp>
@@ -211,7 +214,22 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_gather(
 )
 {
 	validate_root_rank(root_rank);
+	const auto send_datatype = to_mpi_datatype(send_region.get_data_type());
+	validate_mpi_datatype(send_datatype);
+	const auto recv_datatype = to_mpi_datatype(recv_region.get_data_type());
+	validate_mpi_datatype(recv_datatype);
 
+	// TODO handle receive pointer division
+	return std::make_shared<mpi_host_gather_operation>(
+		m_communicator,
+		send_region.get_data(),
+		send_region.get_count(),
+		send_datatype,
+		recv_region.get_data(),
+		recv_region.get_count(),
+		recv_datatype,
+		root_rank
+	);
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_all_gather(
@@ -219,7 +237,21 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_all_gather(
 	const host_receive_region &recv_region
 )
 {
+	const auto send_datatype = to_mpi_datatype(send_region.get_data_type());
+	validate_mpi_datatype(send_datatype);
+	const auto recv_datatype = to_mpi_datatype(recv_region.get_data_type());
+	validate_mpi_datatype(recv_datatype);
 
+	// TODO handle receive pointer division
+	return std::make_shared<mpi_host_all_gather_operation>(
+		m_communicator,
+		send_region.get_data(),
+		send_region.get_count(),
+		send_datatype,
+		recv_region.get_data(),
+		recv_region.get_count(),
+		recv_datatype
+	);
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_scatter(
@@ -229,7 +261,22 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_scatter(
 )
 {
 	validate_root_rank(root_rank);
+	const auto send_datatype = to_mpi_datatype(send_region.get_data_type());
+	validate_mpi_datatype(send_datatype);
+	const auto recv_datatype = to_mpi_datatype(recv_region.get_data_type());
+	validate_mpi_datatype(recv_datatype);
 
+	// TODO handle receive pointer division
+	return std::make_shared<mpi_host_scatter_operation>(
+		m_communicator,
+		send_region.get_data(),
+		send_region.get_count(),
+		send_datatype,
+		recv_region.get_data(),
+		recv_region.get_count(),
+		recv_datatype,
+		root_rank
+	);
 }
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_barrier()
