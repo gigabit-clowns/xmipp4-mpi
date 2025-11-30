@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
-#include "mpi_datatype.hpp"
+#include "mpi_convert.hpp"
 
 namespace xmipp4 
 {
@@ -33,11 +33,15 @@ MPI_Datatype to_mpi_datatype(numerical_type type) noexcept
 	}
 }
 
-void validate_mpi_datatype(MPI_Datatype type)
+MPI_Op to_mpi_op(reduction_operation operation) noexcept
 {
-	if (type == 0)
+	switch (operation)
 	{
-		throw std::invalid_argument("Provided data type is not supported");
+	case reduction_operation::sum: return MPI_SUM;
+	case reduction_operation::product: return MPI_PROD;
+	case reduction_operation::min: return MPI_MIN;
+	case reduction_operation::max: return MPI_MAX;
+	default: return 0;
 	}
 }
 

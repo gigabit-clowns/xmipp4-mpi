@@ -95,6 +95,19 @@ private:
 
 	void validate_root_rank(int root_rank);
 	void validate_peer_rank(int peer_rank);
+	static void validate_mpi_datatype(MPI_Datatype datatype);
+	static void validate_mpi_op(MPI_Op op);
+	static void validate_gather_scatter_counts(
+		std::size_t full_count, 
+		std::size_t block_count, 
+		std::size_t comm_size
+	);
+	static bool check_in_place(
+		const void *base_buf, 
+		const void *block_buf, 
+		std::size_t block_size, 
+		std::size_t rank
+	);
 
 };
 
