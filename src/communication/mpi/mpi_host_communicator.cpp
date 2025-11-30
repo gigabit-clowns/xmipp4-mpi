@@ -395,7 +395,7 @@ void mpi_host_communicator::validate_peer_rank(std::size_t peer_rank)
 
 void mpi_host_communicator::validate_mpi_datatype(MPI_Datatype type)
 {
-	if (type == 0)
+	if (type == MPI_DATATYPE_NULL)
 	{
 		throw std::invalid_argument("Provided data type is not supported");
 	}
@@ -403,7 +403,7 @@ void mpi_host_communicator::validate_mpi_datatype(MPI_Datatype type)
 
 void mpi_host_communicator::validate_mpi_op(MPI_Op op)
 {
-	if (op == 0)
+	if (op == MPI_OP_NULL)
 	{
 		throw std::invalid_argument(
 			"Provided reduction operation is not supported"

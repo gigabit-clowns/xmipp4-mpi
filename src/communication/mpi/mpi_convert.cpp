@@ -22,14 +22,14 @@ MPI_Datatype to_mpi_datatype(numerical_type type) noexcept
 	case numerical_type::uint32: return MPI_UINT32_T;
 	case numerical_type::int64: return MPI_INT64_T;
 	case numerical_type::uint64: return MPI_UINT64_T;
-	case numerical_type::float16: return 0; 
-	case numerical_type::brain_float16: return 0;
+	case numerical_type::float16: return MPI_DATATYPE_NULL; 
+	case numerical_type::brain_float16: return MPI_DATATYPE_NULL;
 	case numerical_type::float32: return MPI_FLOAT;
 	case numerical_type::float64: return MPI_DOUBLE;
-	case numerical_type::complex_float16: return 0;
+	case numerical_type::complex_float16: return MPI_DATATYPE_NULL;
 	case numerical_type::complex_float32: return MPI_C_FLOAT_COMPLEX;
 	case numerical_type::complex_float64: return MPI_C_DOUBLE_COMPLEX;
-	default: return 0;
+	default: return MPI_DATATYPE_NULL;
 	}
 }
 
@@ -41,7 +41,7 @@ MPI_Op to_mpi_op(reduction_operation operation) noexcept
 	case reduction_operation::product: return MPI_PROD;
 	case reduction_operation::min: return MPI_MIN;
 	case reduction_operation::max: return MPI_MAX;
-	default: return 0;
+	default: return MPI_OP_NULL;
 	}
 }
 
