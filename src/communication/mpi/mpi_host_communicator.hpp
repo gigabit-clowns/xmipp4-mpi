@@ -45,25 +45,25 @@ public:
 
 	std::shared_ptr<host_operation> create_send(
 		const host_send_region &region,
-		int destination_rank,
+		std::size_t destination_rank,
 		int tag
 	) override;
 
 	std::shared_ptr<host_operation> create_receive(
 		const host_receive_region &region,
-		int source_rank,
+		std::size_t source_rank,
 		int tag
 	) override;
 
 	std::shared_ptr<host_operation> create_broadcast(
 		const host_duplex_region &region,
-		int root_rank
+		std::size_t root_rank
 	) override;
 
 	std::shared_ptr<host_operation> create_reduce(
 		const host_duplex_region &region,
 		reduction_operation reduction,
-		int root_rank
+		std::size_t root_rank
 	) override;
 
 	std::shared_ptr<host_operation> create_all_reduce(
@@ -74,7 +74,7 @@ public:
 	std::shared_ptr<host_operation> create_gather(
 		const host_send_region &send_region,
 		const host_receive_region &recv_region,
-		int root_rank
+		std::size_t root_rank
 	) override;
 
 	std::shared_ptr<host_operation> create_all_gather(
@@ -85,7 +85,7 @@ public:
 	std::shared_ptr<host_operation> create_scatter(
 		const host_send_region &send_region,
 		const host_receive_region &recv_region,
-		int root_rank
+		std::size_t root_rank
 	) override;
 
 	std::shared_ptr<host_operation> create_barrier() override;
@@ -93,8 +93,8 @@ public:
 private:
 	MPI_Comm m_communicator;
 
-	void validate_root_rank(int root_rank);
-	void validate_peer_rank(int peer_rank);
+	void validate_root_rank(std::size_t root_rank);
+	void validate_peer_rank(std::size_t peer_rank);
 	static void validate_mpi_datatype(MPI_Datatype datatype);
 	static void validate_mpi_op(MPI_Op op);
 	static void validate_gather_scatter_counts(

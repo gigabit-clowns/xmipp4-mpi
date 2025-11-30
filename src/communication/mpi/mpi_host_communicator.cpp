@@ -23,9 +23,6 @@
 
 #include <stdexcept>
 
-// TODO: Check for input regions not having nullptr.
-// TODO: Check size/datatype consistencies.
-
 namespace xmipp4 
 {
 namespace communication
@@ -110,7 +107,7 @@ mpi_host_communicator::split(int colour, int rank_priority) const
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_send(
 	const host_send_region &region,
-	int destination_rank,
+	std::size_t destination_rank,
 	int tag
 )
 {
@@ -133,7 +130,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_send(
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_receive(
 	const host_receive_region &region,
-	int source_rank,
+	std::size_t source_rank,
 	int tag
 )
 {
@@ -156,7 +153,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_receive(
 
 std::shared_ptr<host_operation> mpi_host_communicator::create_broadcast(
 	const host_duplex_region &region,
-	int root_rank
+	std::size_t root_rank
 )
 {
 	const auto *send_buf = region.get_send_data();
@@ -180,7 +177,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_broadcast(
 std::shared_ptr<host_operation> mpi_host_communicator::create_reduce(
 	const host_duplex_region &region,
 	reduction_operation reduction,
-	int root_rank
+	std::size_t root_rank
 )
 {
 	const auto *send_buf = region.get_send_data();
@@ -192,6 +189,11 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_reduce(
 	validate_mpi_datatype(datatype);
 	validate_mpi_op(op);
 	validate_root_rank(root_rank);
+
+	if (get_rank() == root_rank && send_buf == recv_buf)
+	{
+		send_buf = MPI_IN_PLACE;
+	}
 
 	return std::make_shared<mpi_host_reduce_operation>(
 		m_communicator,
@@ -218,6 +220,11 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_all_reduce(
 	validate_mpi_datatype(datatype);
 	validate_mpi_op(op);
 
+	if (send_buf == recv_buf)
+	{
+		send_buf = MPI_IN_PLACE;
+	}
+
 	return std::make_shared<mpi_host_all_reduce_operation>(
 		m_communicator,
 		send_buf,
@@ -231,7 +238,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_all_reduce(
 std::shared_ptr<host_operation> mpi_host_communicator::create_gather(
 	const host_send_region &send_region,
 	const host_receive_region &recv_region,
-	int root_rank
+	std::size_t root_rank
 )
 {
 	const auto *send_buf = send_region.get_data();
@@ -245,7 +252,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_gather(
 	void *recv_buf = nullptr;
 	MPI_Datatype recv_datatype = 0;
 	int recv_count = 0;
-	if (static_cast<int>(rank) == root_rank)
+	if (rank == root_rank)
 	{
 		recv_buf = recv_region.get_data();
 		recv_datatype = to_mpi_datatype(recv_region.get_data_type());
@@ -314,7 +321,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_all_gather(
 std::shared_ptr<host_operation> mpi_host_communicator::create_scatter(
 	const host_send_region &send_region,
 	const host_receive_region &recv_region,
-	int root_rank
+	std::size_t root_rank
 )
 {
 	auto *recv_buf = recv_region.get_data();
@@ -328,7 +335,7 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_scatter(
 	const void *send_buf = nullptr;
 	MPI_Datatype send_datatype = 0;
 	int send_count = 0;
-	if (static_cast<int>(rank) == root_rank)
+	if (rank == root_rank)
 	{
 		send_buf = send_region.get_data();
 		send_datatype = to_mpi_datatype(send_region.get_data_type());
@@ -363,22 +370,22 @@ std::shared_ptr<host_operation> mpi_host_communicator::create_barrier()
 	return std::make_shared<mpi_host_barrier_operation>(m_communicator);
 }
 
-void mpi_host_communicator::validate_root_rank(int root_rank)
+void mpi_host_communicator::validate_root_rank(std::size_t root_rank)
 {
-	if (root_rank >= static_cast<int>(get_size()))
+	if (root_rank >= get_size())
 	{
 		throw std::out_of_range("The root_rank is out of bounds");
 	}
 }
 
-void mpi_host_communicator::validate_peer_rank(int peer_rank)
+void mpi_host_communicator::validate_peer_rank(std::size_t peer_rank)
 {
-	if (peer_rank >= static_cast<int>(get_size()))
+	if (peer_rank >= get_size())
 	{
 		throw std::out_of_range("The peer's rank is out of bounds");
 	}
 
-	if (peer_rank == static_cast<int>(get_rank()))
+	if (peer_rank == get_rank())
 	{
 		throw std::invalid_argument(
 			"The peer's rank can not be equal to the self rank"
