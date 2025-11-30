@@ -22,11 +22,11 @@ MPI_Datatype to_mpi_datatype(numerical_type type) noexcept
 	case numerical_type::uint32: return MPI_UINT32_T;
 	case numerical_type::int64: return MPI_INT64_T;
 	case numerical_type::uint64: return MPI_UINT64_T;
-	//case numerical_type::float16: return 0; 
-	//case numerical_type::brain_float16: return 0;
+	case numerical_type::float16: return 0; 
+	case numerical_type::brain_float16: return 0;
 	case numerical_type::float32: return MPI_FLOAT;
 	case numerical_type::float64: return MPI_DOUBLE;
-	// case numerical_type::complex_float16: return 0;
+	case numerical_type::complex_float16: return 0;
 	case numerical_type::complex_float32: return MPI_C_FLOAT_COMPLEX;
 	case numerical_type::complex_float64: return MPI_C_DOUBLE_COMPLEX;
 	default: return 0;
