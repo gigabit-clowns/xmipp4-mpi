@@ -3,10 +3,6 @@
 #pragma once
 
 #include <xmipp4/core/communication/host_communicator.hpp>
-#include <xmipp4/core/span.hpp>
-#include <xmipp4/core/memory/byte.hpp>
-
-#include <memory>
 
 #include <mpi.h>
 
@@ -15,6 +11,10 @@ namespace xmipp4
 namespace communication
 {
 
+/**
+ * @brief Implementation of the host_communicator interface using MPI.
+ * 
+ */
 class mpi_host_communicator final
 	: public host_communicator
 {
@@ -43,10 +43,72 @@ public:
 		int rank_priority 
 	) const override;
 
-	void barrier() override;
+	std::shared_ptr<host_operation> create_send(
+		const host_send_region &region,
+		std::size_t destination_rank,
+		int tag
+	) override;
+
+	std::shared_ptr<host_operation> create_receive(
+		const host_receive_region &region,
+		std::size_t source_rank,
+		int tag
+	) override;
+
+	std::shared_ptr<host_operation> create_broadcast(
+		const host_duplex_region &region,
+		std::size_t root_rank
+	) override;
+
+	std::shared_ptr<host_operation> create_reduce(
+		const host_duplex_region &region,
+		reduction_operation reduction,
+		std::size_t root_rank
+	) override;
+
+	std::shared_ptr<host_operation> create_all_reduce(
+		const host_duplex_region &region,
+		reduction_operation reduction
+	) override;
+
+	std::shared_ptr<host_operation> create_gather(
+		const host_send_region &send_region,
+		const host_receive_region &recv_region,
+		std::size_t root_rank
+	) override;
+
+	std::shared_ptr<host_operation> create_all_gather(
+		const host_send_region &send_region,
+		const host_receive_region &recv_region
+	) override;
+
+	std::shared_ptr<host_operation> create_scatter(
+		const host_send_region &send_region,
+		const host_receive_region &recv_region,
+		std::size_t root_rank
+	) override;
+
+	std::shared_ptr<host_operation> create_barrier() override;
 
 private:
 	MPI_Comm m_communicator;
+
+	void validate_root_rank(std::size_t root_rank);
+	void validate_peer_rank(std::size_t peer_rank);
+	static void validate_mpi_datatype(MPI_Datatype datatype);
+	static void validate_mpi_op(MPI_Op op);
+	static void validate_gather_scatter_counts(
+		std::size_t full_count, 
+		std::size_t block_count, 
+		std::size_t comm_size
+	);
+	static bool check_in_place(
+		const void *base_buf, 
+		const void *block_buf, 
+		std::size_t block_size, 
+		std::size_t rank
+	);
+
 };
 
 } // namespace communication
