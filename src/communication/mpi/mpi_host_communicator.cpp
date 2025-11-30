@@ -436,6 +436,5 @@ bool mpi_host_communicator::check_in_place(
 	return memory::offset_bytes(base_buf, offset) == block_buf;
 }
 
-
 } // namespace communication
 } // namespace xmipp4
