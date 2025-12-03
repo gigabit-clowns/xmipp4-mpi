@@ -14,6 +14,7 @@ MPI_Datatype to_mpi_datatype(numerical_type type) noexcept
 
 	switch (type)
 	{
+	case numerical_type::char8: return MPI_CHAR;
 	case numerical_type::int8: return MPI_INT8_T;
 	case numerical_type::uint8: return MPI_UINT8_T;
 	case numerical_type::int16: return MPI_INT16_T;
@@ -23,7 +24,6 @@ MPI_Datatype to_mpi_datatype(numerical_type type) noexcept
 	case numerical_type::int64: return MPI_INT64_T;
 	case numerical_type::uint64: return MPI_UINT64_T;
 	case numerical_type::float16: return MPI_DATATYPE_NULL; 
-	case numerical_type::brain_float16: return MPI_DATATYPE_NULL;
 	case numerical_type::float32: return MPI_FLOAT;
 	case numerical_type::float64: return MPI_DOUBLE;
 	case numerical_type::complex_float16: return MPI_DATATYPE_NULL;
