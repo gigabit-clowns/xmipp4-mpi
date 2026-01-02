@@ -14,7 +14,7 @@ include(GNUInstallDirs)
 include(CTest)
 
 # Declare build options
-option(XMIPP4_COMMUNICATION_MPI_LINT_CLANG_TIDY "Lint with clang-tidy" OFF)
+option(XMIPP4_MPI_LINT_CLANG_TIDY "Lint with clang-tidy" OFF)
 
 # Find xmipp4-core
 if(NOT TARGET xmipp4-core)
@@ -38,7 +38,7 @@ set_target_properties(
 	${PROJECT_NAME} 
 	PROPERTIES 
 		CXX_STANDARD 20
-		DEFINE_SYMBOL "XMIPP4_COMMUNICATION_MPI_EXPORTING"
+		DEFINE_SYMBOL "XMIPP4_MPI_EXPORTING"
 )
 target_compile_definitions(
 	${PROJECT_NAME} 
@@ -56,7 +56,7 @@ target_link_libraries(
 )
 
 # Set up clang-tidy
-if(XMIPP4_COMMUNICATION_MPI_LINT_CLANG_TIDY)
+if(XMIPP4_MPI_LINT_CLANG_TIDY)
 	find_program(CLANG_TIDY_EXE clang-tidy REQUIRED)
 	set_target_properties(
 		${PROJECT_NAME} 
