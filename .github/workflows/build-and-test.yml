@@ -43,10 +43,10 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install MPI
-        uses: mpi4py/setup-mpi@v1
+        uses: mpi4py/setup-mpi@f200dce75b64188be849b46657dcf86c721937b2 # v1
         with:
           mpi: ${{ matrix.mpi }}
 
@@ -59,7 +59,7 @@ jobs:
           pip install --no-index --find-links=dist xmipp4-core
 
       - name: Configure and build with CMake
-        uses: threeal/cmake-action@v2
+        uses: threeal/cmake-action@725d1314ccf9ea922805d7e3f9d9bcbca892b406 # v2
         with:
           source-dir: ${{ github.workspace }}
           build-dir: "${{ github.workspace }}/build"
@@ -95,10 +95,10 @@ jobs:
         shell: bash -el {0}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install MPI
-        uses: mpi4py/setup-mpi@v1
+        uses: mpi4py/setup-mpi@f200dce75b64188be849b46657dcf86c721937b2 # v1
         with:
           mpi: ${{ matrix.mpi }}
 
