@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install MPI
-        uses: mpi4py/setup-mpi@f200dce75b64188be849b46657dcf86c721937b2 # v1
+        uses: mpi4py/setup-mpi@3417e34f1394a16723d7913c236642c24e95fd5a # v1
         with:
           mpi: ${{ matrix.mpi }}
 
@@ -98,7 +98,7 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
 
       - name: Install MPI
-        uses: mpi4py/setup-mpi@f200dce75b64188be849b46657dcf86c721937b2 # v1
+        uses: mpi4py/setup-mpi@3417e34f1394a16723d7913c236642c24e95fd5a # v1
         with:
           mpi: ${{ matrix.mpi }}
 
